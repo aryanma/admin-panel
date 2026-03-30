@@ -11,11 +11,12 @@ export async function createImage(formData: FormData) {
   if (!user) return { error: "Not authenticated" };
 
   const url = formData.get("url") as string;
-  const alt_text = formData.get("alt_text") as string;
+  const additional_context = formData.get("additional_context") as string;
 
   const { error } = await supabase.from("images").insert({
     url,
-    alt_text: alt_text || null,
+    additional_context: additional_context || null,
+    profile_id: user.id,
     created_by_user_id: user.id,
     modified_by_user_id: user.id,
   });
@@ -34,13 +35,13 @@ export async function updateImage(formData: FormData) {
 
   const id = formData.get("id") as string;
   const url = formData.get("url") as string;
-  const alt_text = formData.get("alt_text") as string;
+  const additional_context = formData.get("additional_context") as string;
 
   const { error } = await supabase
     .from("images")
     .update({
       url,
-      alt_text: alt_text || null,
+      additional_context: additional_context || null,
       modified_by_user_id: user.id,
     })
     .eq("id", id);

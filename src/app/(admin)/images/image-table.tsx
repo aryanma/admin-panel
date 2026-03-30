@@ -6,7 +6,9 @@ import { createImage, updateImage, deleteImage } from "@/app/actions";
 type Image = {
   id: string;
   url: string;
-  alt_text: string | null;
+  image_description: string | null;
+  is_public: boolean;
+  profile_id: string | null;
   created_datetime_utc: string | null;
 };
 
@@ -84,12 +86,12 @@ export function ImageTable({ images }: { images: Image[] }) {
             </div>
             <div>
               <label className="block text-sm text-zinc-400">
-                Alt Text (optional)
+                Description (optional)
               </label>
               <input
-                name="alt_text"
+                name="additional_context"
                 className="mt-1 w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white placeholder-zinc-500 focus:border-zinc-500 focus:outline-none"
-                placeholder="Description..."
+                placeholder="Context for the image..."
               />
             </div>
           </div>
@@ -108,8 +110,8 @@ export function ImageTable({ images }: { images: Image[] }) {
           <thead className="border-b border-zinc-800 bg-zinc-900 text-zinc-400">
             <tr>
               <th className="px-4 py-3 font-medium">Preview</th>
-              <th className="px-4 py-3 font-medium">URL</th>
-              <th className="px-4 py-3 font-medium">Alt Text</th>
+              <th className="px-4 py-3 font-medium">Description</th>
+              <th className="px-4 py-3 font-medium">Public</th>
               <th className="px-4 py-3 font-medium">Created</th>
               <th className="px-4 py-3 font-medium">Actions</th>
             </tr>
@@ -132,11 +134,10 @@ export function ImageTable({ images }: { images: Image[] }) {
                       </div>
                       <div className="flex-1">
                         <label className="block text-xs text-zinc-400">
-                          Alt Text
+                          Context
                         </label>
                         <input
-                          name="alt_text"
-                          defaultValue={img.alt_text ?? ""}
+                          name="additional_context"
                           className="mt-1 w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-1.5 text-sm text-white focus:border-zinc-500 focus:outline-none"
                         />
                       </div>
@@ -161,15 +162,25 @@ export function ImageTable({ images }: { images: Image[] }) {
                     <td className="px-4 py-3">
                       <img
                         src={img.url}
-                        alt={img.alt_text || ""}
+                        alt=""
                         className="h-10 w-10 rounded object-cover"
                       />
                     </td>
                     <td className="max-w-xs truncate px-4 py-3 text-zinc-300">
-                      {img.url}
+                      {img.image_description
+                        ? img.image_description.slice(0, 80) + "..."
+                        : "—"}
                     </td>
-                    <td className="px-4 py-3 text-zinc-400">
-                      {img.alt_text || "—"}
+                    <td className="px-4 py-3">
+                      {img.is_public ? (
+                        <span className="rounded-full bg-green-900/50 px-2 py-0.5 text-xs text-green-400">
+                          Yes
+                        </span>
+                      ) : (
+                        <span className="rounded-full bg-zinc-800 px-2 py-0.5 text-xs text-zinc-400">
+                          No
+                        </span>
+                      )}
                     </td>
                     <td className="px-4 py-3 text-zinc-400">
                       {img.created_datetime_utc

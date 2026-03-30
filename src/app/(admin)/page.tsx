@@ -28,7 +28,7 @@ export default async function DashboardPage() {
       .limit(5),
     supabase
       .from("images")
-      .select("id, url, alt_text")
+      .select("id, url, image_description")
       .order("created_datetime_utc", { ascending: false })
       .limit(5),
   ]);
@@ -71,11 +71,11 @@ export default async function DashboardPage() {
                 >
                   <img
                     src={img.url}
-                    alt={img.alt_text || ""}
+                    alt={img.image_description || ""}
                     className="h-10 w-10 rounded object-cover"
                   />
                   <span className="truncate text-sm text-zinc-300">
-                    {img.alt_text || img.url}
+                    {img.image_description || img.url}
                   </span>
                 </li>
               ))}
