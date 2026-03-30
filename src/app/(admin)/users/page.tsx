@@ -5,16 +5,19 @@ export const dynamic = "force-dynamic";
 export default async function UsersPage() {
   const { supabase } = await requireAdmin();
 
-  const { data: users } = await supabase
-    .from("profiles")
-    .select("id, email, first_name, last_name, is_superadmin, created_datetime_utc")
-    .order("created_datetime_utc", { ascending: false });
+  const [{ data: users }, { count }] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select("id, email, first_name, last_name, is_superadmin, created_datetime_utc")
+      .order("created_datetime_utc", { ascending: false }),
+    supabase.from("profiles").select("*", { count: "exact", head: true }),
+  ]);
 
   return (
     <div>
       <h1 className="text-2xl font-bold text-white">Users</h1>
       <p className="mt-1 text-sm text-zinc-400">
-        All registered profiles ({users?.length ?? 0})
+        All registered profiles ({count ?? users?.length ?? 0})
       </p>
 
       <div className="mt-6 overflow-x-auto rounded-lg border border-zinc-800">

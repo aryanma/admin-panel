@@ -5,17 +5,23 @@ export const dynamic = "force-dynamic";
 export default async function CaptionsPage() {
   const { supabase } = await requireAdmin();
 
-  const { data: captions } = await supabase
-    .from("captions")
-    .select("id, content, image_id, created_datetime_utc")
-    .not("content", "is", null)
-    .order("created_datetime_utc", { ascending: false });
+  const [{ data: captions }, { count }] = await Promise.all([
+    supabase
+      .from("captions")
+      .select("id, content, image_id, created_datetime_utc")
+      .not("content", "is", null)
+      .order("created_datetime_utc", { ascending: false }),
+    supabase
+      .from("captions")
+      .select("*", { count: "exact", head: true })
+      .not("content", "is", null),
+  ]);
 
   return (
     <div>
       <h1 className="text-2xl font-bold text-white">Captions</h1>
       <p className="mt-1 text-sm text-zinc-400">
-        All generated captions ({captions?.length ?? 0})
+        All generated captions ({count ?? captions?.length ?? 0})
       </p>
 
       <div className="mt-6 overflow-x-auto rounded-lg border border-zinc-800">
