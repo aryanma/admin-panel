@@ -7,7 +7,10 @@ import { createClient } from "@/lib/supabase-browser";
 const navSections = [
   {
     label: "Overview",
-    items: [{ href: "/", label: "Dashboard" }],
+    items: [
+      { href: "/", label: "Dashboard" },
+      { href: "/caption-stats", label: "Caption Stats" },
+    ],
   },
   {
     label: "Content",
